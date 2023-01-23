@@ -1,5 +1,5 @@
 # StudioManager
-Django project to demonstrate CRUD operations.
+Django project to demonstrate CRUD operations and working with DataTables for JQuery.
 
 # Tech
 - Python
