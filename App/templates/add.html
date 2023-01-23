@@ -1,0 +1,65 @@
+<!-- Modal -->
+<div class="modal fade" {% block modal-id %} id='addModal' {% endblock modal-id %} tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title fs-5" id="addModalLabel">
+            {% block modal-title %} <i class="fas fa-plus"></i>&nbsp;&nbsp; Add Customer{% endblock modal-title %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <form method="POST" {% block action %} action="/add_customer" {% endblock action %} autocomplete="off">
+        {% csrf_token %}
+        <div class="modal-body">
+            {% block Value-id %} {% endblock Value-id %}
+            <div class="input-group mb-3">
+                <span class="btn border-secondary bg-light side-label"><i class="fas fa-user-alt"></i></span>
+                <input type="text" name="name" class="form-control" maxlength="40" placeholder="Full name" required {% block Value-name %} {% endblock Value-name %}>
+            </div>
+            <div class="input-group mb-3">
+                <span class="btn border-secondary bg-light side-label"><i class="fas fa-envelope"></i></span>
+                <input type="email" name="email" class="form-control" maxlength="40" placeholder="Email" required {% block Value-email %} {% endblock Value-email %}>
+            </div>
+            <div class="input-group mb-3">
+                <span class="btn border-secondary bg-light side-label"><i class="fas fa-camera-alt"></i></span>
+                <input type="text" name="target" class="form-control" maxlength="40" placeholder="Service Type" required {% block Value-target %} {% endblock Value-target %}>
+            </div>
+            <div class="input-group mb-3">
+                <span class="btn border-secondary bg-light side-label"><i class="fas fa-dollar-sign"></i></span>
+                <input type="text" name="revenue" class="form-control" maxlength="10" placeholder="Total Revenue" required {% block Value-revenue %} {% endblock Value-revenue %}>
+            </div>
+            <div class="input-group mb-3">
+                <label>
+                    <span class="btn border-secondary bg-light side-label" style="border-radius: 4px 0px 0px 4px;">
+                        <i class="fa-solid fa-person-half-dress"></i>
+                    </span>
+                </label>
+                <select class="form-select" name="gender" required>
+                    {% block option %} 
+                    <option value="" hidden>Select Gender</option>
+                    {% endblock option %}
+                    <option disabled></option>
+                    <option>M</option>
+                    <option>F</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <textarea class="form-control" name="note" rows="7" maxlength="1000" placeholder="Customer Notes (optional)"></textarea>
+            </div>
+
+            <div class="mt-4" style="width: 100%;">
+                <button type="submit" class="btn btn-success mb-3" style="width: 50px;">
+                    <i class="fas fa-check"></i>
+                </button>
+                <a href="{% url 'home' %}" class="btn btn-danger mb-3" style="width: 50px;" title="Close">
+                    <i class="fas fa-times"></i>
+                </a>
+                <button type="reset" class="btn btn-outline-dark mb-3" style="width: 50px;" title="Reset">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+    </div>
+</div>
+</div>

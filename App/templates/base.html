@@ -1,0 +1,207 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FAVICON -->
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
+    <!-- BOOTSTRAP CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" 
+    rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" 
+    crossorigin="anonymous">
+    <!-- FONTAWESOME 6.2.1 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" 
+    integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" 
+    crossorigin="anonymous" 
+    referrerpolicy="no-referrer" />
+    <!-- STATIC CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- DATATABLE CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/jq-3.6.0/jszip-2.5.0/dt-1.13.1/b-2.3.3/b-html5-2.3.3/b-print-2.3.3/datatables.min.css"/>
+
+    <title>Studio Manager</title>
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <div class="col-sm">
+                    <a href="" class="navbar-brand flex-grow-1" style="text-align: center; color: #fff; margin-left: 25px;">
+                        {% block navbar-content %} {% endblock navbar-content %}
+                    </a>
+                </div>
+                <!-- INPUT SEARCH OUTSIDE -->
+                <div class="d-flex" style="margin-right: 25px;">
+                    <div class="input-group input-group-sm">
+                        <a class="btn btn-success btn-sm" style="width: 40px;" data-bs-toggle="modal" data-bs-target="#addModal">
+                            <i class="fas fa-plus"></i>
+                        </a>
+                        <input class="form-control" type="search" id="search" placeholder="Global Search ..." aria-label="Search">
+                        <a href="{% url 'home' %}" style="width: 40px;" class="btn btn-secondary btn-sm"><i class="fas fa-sync-alt"></i></a>
+                    </div>
+                </div>
+            </nav>
+            <div class="px-4 py-2 my-3 text-center">
+                <h1 class="display-5 fw-bold">Customer Database</h1>
+                <div class="col-lg-6 mx-auto">
+                    <p class="lead mb-4">Photography studio customer management system.</p>
+                </div>
+            </div>
+        </header>
+        <!-- BLOCK CONTENT ROOT -->
+        {% block content %} {% endblock content %}
+
+        <!-- INCLUDE PAGES -->
+        {% include 'add.html' %}
+    </div> <!-- END WRAPPER -->
+
+
+    <!-- BOOTSTRAP JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" 
+    crossorigin="anonymous"></script>
+
+    <!-- JQUERY 3 -->
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js" 
+    integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" 
+    crossorigin="anonymous"></script>
+
+    <!-- DATATABLES JS -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/jq-3.6.0/jszip-2.5.0/dt-1.13.1/b-2.3.3/b-html5-2.3.3/b-print-2.3.3/datatables.min.js"></script>    
+
+    <!-- DATATABLES SCRIPT -->
+    <script>
+        $(document).ready(function() {
+            $('#customer-table thead tr')
+                .clone(true)
+                .addClass('filters')
+                .appendTo('#customer-table thead');
+
+            var table = $('#customer-table').DataTable({
+                // DATATABLE CONFIG
+                paging: true,       // pagination
+                pageLength: 10,      // data per page
+                lengthChange: true, // show enteries per page
+                autoWidth: false,    // control auto width of columns
+                searching: true,    // input search
+                bInfo: true,        // info on footer
+                bSort: true,        // filter A to Z - Z to A - Digit
+
+                orderCellsTop: true, // Put Sort Filter in first Thead
+                "columnDefs": [{
+                    "targets": [6,7],
+                    "orderable": false
+                }],                
+
+                initComplete: function() {
+                    var api = this.api();
+                    // columns that will allow filtering
+                    api
+                        .columns([0,1,2,3,4,5])
+                        .eq(0)
+                        .each(function(colIdx) {
+                            var cell = $('.filters th').eq(
+                                $(api.column(colIdx).header()).index()
+                            );
+                            var title = $(cell).text();
+                            $(cell).html('<input type="text" placeholder="' + title + '"/>');
+
+                            $(
+                                'input',
+                                $('.filters th').eq($(api.column(colIdx).header()).index())
+                            )
+                            .off('keyip change')
+                            .on('keyup change', function(e) {
+                                e.stopPropagation();
+
+                                $(this).attr('title', $(this).val());
+                                var regexr = '({search})';
+
+                                var cursorPosition = this.selectionStart;
+
+                                api
+                                    .column(colIdx)
+                                    .search(
+                                        this.value != ''
+                                        ? regexr.replace('{search}', '(((' + this.value + ')))')
+                                        : '',
+                                        this.value != '',
+                                        this.value == ''
+                                    )
+                                .draw();
+
+                            $(this)
+                                .focus()[0]
+                                .setSelectionRange(cursorPosition, cursorPosition);
+                        });
+                    });
+                },
+                // BUTTONS
+                dom: 'lBfrtip',
+                buttons: [
+                    {   // COPY BUTTON
+                        extend: 'copy',
+                        text: '<i class="fas fa-clone"></i>',
+                        className: 'btn btn-warning',
+                        titleAttr: 'Copy',
+                        // Choose columns to copy
+                        exportOptions: {
+                            columns: [0,1,2,3,4,5]
+                        },
+                    },
+                    {   // EXCEL BUTTON
+                        extend: 'excel',
+                        text: '<i class="fas fa-file-excel"></i>',
+                        className: 'btn btn-warning',
+                        titleAttr: 'Excel',
+                        // Choose columns to export
+                        exportOptions: {
+                            columns: [0,1,2,3,4,5]
+                        },
+                    },
+                    {   // PRINT BUTTON
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i>',
+                        className: 'btn btn-warning',
+                        titleAttr: 'Print',
+                        // Choose columns to print
+                        exportOptions: {
+                            columns: [0,1,2,3,4,5]
+                        },
+                    },
+                    {   // PDF BUTTON
+                        extend: 'pdf',
+                        text: '<i class="fas fa-file-pdf"></i>',
+                        className: 'btn btn-warning',
+                        titleAttr: 'PDF',
+                        // Choose columns to export to PDF
+                        exportOptions: {
+                            columns: [0,1,2,3,4,5]
+                        },
+                        tableHeader: {
+                            alignment: 'center'
+                        },
+                        customize: function (doc) {
+                            doc.styles.tableHeader.alignment = 'center';
+                            doc.styles.tableBodyOdd.alignment = 'center';
+                            doc.styles.tableBodyEven.alignment = 'center';
+                            doc.styles.tableHeader.fontSize = 8;
+                            doc.defaultStyle.fontSize = 7;
+                            doc.content[1].table.widths = Array(doc.content[1].table.body[1].length + 1).join('*').split('');
+                        }
+                    },
+                ]
+            });
+            // Enable Navbar Search
+            var newSearch = $("#customer-table").DataTable();
+            $('#search').keyup(function() {
+                newSearch.search($(this).val()).draw();
+            })
+        });
+    </script>
+</body>
+</html>

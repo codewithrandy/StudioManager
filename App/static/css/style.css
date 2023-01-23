@@ -1,0 +1,63 @@
+/* START CONFIGURATION */
+html,
+body {
+    height: 100%;
+    margin: 0;
+    max-width: 100%;
+}
+
+/* OTHER */
+.side-label {
+    width: 45px;
+}
+
+/* PAGINATION */
+.page-item.active .page-link {
+    columns: #fff;
+    color: #757e86;
+    background-color: #FEF0C0;
+    border: 1px solid #e3e3e3;
+}
+.pagination > li > a {
+    background-color: #fff;
+    color: #757e86;
+}
+.pagination > li > a:focus,
+.pagination > li > a:hover,
+.pagination > span > a:focus,
+.pagination > span > a:hover {
+    color: #fff;
+    background-color: #FBB300;
+    border: 1px solid #e3e3e3;
+    box-shadow: none;
+}
+
+/* DATATABLES */
+/* Pagination */
+.dataTables_paginate {
+    margin-top: -25px !important;
+}
+/* Group Buttons */
+.dt-buttons {
+    margin-bottom: 12px !important;
+}
+/* Show Entries */
+.dataTables_length {
+    float: right !important;
+    margin-top: 8px !important;
+}
+/* Default Search */
+.dataTables_filter {
+    display: none;
+}
+thead input {
+    width: 100%;
+    text-align: center;
+}
+.action-color {
+    color: transparent;
+    border: none;
+}
+th:nth-child(7), th:nth-child(8){
+    border: none;
+}

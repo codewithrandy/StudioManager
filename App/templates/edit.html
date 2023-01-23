@@ -1,0 +1,30 @@
+{% extends 'add.html' %}
+<!-- MODAL ID -->
+{% block modal-id %} id='editModal{{customer.pk}}' {% endblock modal-id %}
+<!-- MODAL TITLE -->
+{% block modal-title %} <i class="fas fa-edit"></i>&nbsp;&nbsp; Edit Customer{% endblock modal-title %}
+<!-- FORM ACTION -->
+{% block action %} action="/edit_customer" {% endblock action %}
+
+<!-- ALL INPUTS -->
+<!-- ID -->
+{% block Value-id %} 
+<div class="input-group mb-3">
+    <span class="btn border-secondary bg-light side-label"><i class="fas fa-key"></i></span>
+    <input type="text" name="id" class="form-control" value="{{customer.id}}" readonly>
+</div>
+{% endblock Value-id %}
+<!-- NAME -->
+{% block Value-name %} value="{{customer.name}}" {% endblock Value-name %}
+<!-- EMAIL -->
+{% block Value-email %} value="{{customer.email}}" {% endblock Value-email %}
+<!-- TARGET -->
+{% block Value-target %} value="{{customer.target}}" {% endblock Value-target %}
+<!-- REVENUE -->
+{% block Value-revenue %} value="{{customer.revenue}}" {% endblock Value-revenue %}
+<!-- GENDER -->
+{% block option %}
+<option style="background-color: #d3d3d3; counter-reset: #111;">{{customer.gender}}</option>
+{% endblock option %}
+<!-- NOTE -->
+{% block Value-note %} value="{{customer.note}}" {% endblock Value-note %}
